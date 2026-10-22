@@ -64,10 +64,20 @@ export interface ExpenseItem {
   encryptionTag: string
   encryptedViaTideOrk: boolean
   approvals: ExpenseApproval[]
-  status: 'PENDING_APPROVAL' | 'APPROVED_READY' | 'RELEASED_PAID' | 'REJECTED'
+  status:
+    | 'PENDING_APPROVAL'
+    | 'APPROVED_READY'
+    | 'RELEASED_PAID'
+    | 'REJECTED'
+    | 'WITHDRAWN'
   releasedAt?: string
   releasedBy?: string
   paymentTxRef?: string
+  rejectedAt?: string
+  rejectedBy?: string
+  rejectionReason?: string
+  withdrawnAt?: string
+  withdrawnBy?: string
 }
 
 export interface IgaApprovalEntry {

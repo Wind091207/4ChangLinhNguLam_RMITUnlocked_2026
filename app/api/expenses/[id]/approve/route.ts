@@ -60,7 +60,21 @@ export async function POST(
     )
   }
 
-  // 3. Prevent duplicate approval by the same approver (Four-Eyes Principle)
+  // 3. Cannot approve if already paid, rejected, or withdrawn
+  if (
+    expense.status === 'RELEASED_PAID' ||
+    expense.status === 'REJECTED' ||
+    expense.status === 'WITHDRAWN'
+  ) {
+    return NextResponse.json(
+      {
+        error: `Conflict (409): Cannot approve ${expense.id} because its status is ${expense.status}.`,
+      },
+      { status: 409 }
+    )
+  }
+
+  // 4. Prevent duplicate approval by the same approver (Four-Eyes Principle)
   if (expense.approvals.some((a) => a.actorId === ctx.actor.id)) {
     appendAudit(db, {
       actorId: ctx.actor.id,

@@ -34,6 +34,7 @@ interface Decision {
 
 type ReasonKey =
   | 'no_approver'
+  | 'no_reject'
   | 'no_release'
   | 'self_approval'
   | 'duplicate'
@@ -43,6 +44,7 @@ type ReasonKey =
   | 'quorum_held'
   | 'self_commit'
   | 'no_submitter'
+  | 'not_submitter_withdraw'
 
 const PERSONA_STYLE: Record<ActorId, { color: string; short: string }> = {
   dave: { color: '#4cc3f5', short: 'Submitter' },
@@ -75,6 +77,14 @@ function explain(key: ReasonKey, ctx: { actorId?: string; detail?: string } = {}
       return {
         reason:
           'Only people holding the expense-approver role can approve. Being an IT admin does not grant financial authority.',
+        missing: ['expense-approver'],
+        whoCan: holders('expense-approver'),
+        enforcedBy: 'TideCloak role check (server)',
+      }
+    case 'no_reject':
+      return {
+        reason:
+          'Only designated approvers holding the expense-approver role can reject an expense request.',
         missing: ['expense-approver'],
         whoCan: holders('expense-approver'),
         enforcedBy: 'TideCloak role check (server)',
@@ -138,6 +148,13 @@ function explain(key: ReasonKey, ctx: { actorId?: string; detail?: string } = {}
         whoCan: holders('expense-submitter'),
         enforcedBy: 'TideCloak role check (server)',
       }
+    case 'not_submitter_withdraw':
+      return {
+        reason:
+          'Only the original submitter who created this expense request can withdraw (recall) it before payment release.',
+        whoCan: [ctx.detail || 'Dave'],
+        enforcedBy: 'DualKey policy (Submitter ownership)',
+      }
   }
 }
 
@@ -160,6 +177,11 @@ function describeAudit(ev: AuditEvent): { outcome: Outcome; text: string; reason
   if (a.startsWith('RELEASE_PAYMENT_BLOCKED')) return { outcome, text: t('tried to release'), reason: 'Missing expense-approver role.' }
   if (a.startsWith('RELEASE_UNDER_THRESHOLD_BLOCKED')) return { outcome, text: t('tried to release early'), reason: 'Needs 2/2 approvals first.' }
   if (a.startsWith('RELEASE_PAYMENT_DISBURSED')) return { outcome, text: t('released payment for') }
+  if (a.startsWith('REJECT_EXPENSE_BLOCKED')) return { outcome, text: t('tried to reject'), reason: 'Missing expense-approver role.' }
+  if (a.startsWith('SELF_REJECT_BLOCKED')) return { outcome, text: t('tried to reject own'), reason: 'Submitters must use Withdraw instead.' }
+  if (a.startsWith('REJECT_EXPENSE')) return { outcome, text: t('rejected expense') }
+  if (a.startsWith('WITHDRAW_EXPENSE_BLOCKED')) return { outcome, text: t('tried to withdraw'), reason: 'Only the original submitter can withdraw.' }
+  if (a.startsWith('WITHDRAW_EXPENSE')) return { outcome, text: t('withdrew expense') }
   if (a.startsWith('IGA_MUTATION_FORBIDDEN')) return { outcome, text: 'tried to change roles', reason: 'Not a realm admin.' }
   if (a.startsWith('IGA_ROLE_ESCALATION_PARKED')) return { outcome, text: 'tried to grant herself expense-approver', reason: 'needs 2 of 3 admins to sign — role not active.' }
   if (a.startsWith('IGA_SELF_COMMIT_BLOCKED')) return { outcome, text: 'tried to self-approve a role change', reason: 'Second signature must be another admin.' }
@@ -185,7 +207,8 @@ function money(n: number): string {
 
 function expenseStatus(e: ExpenseItem): { label: string; tone: 'hold' | 'ok' | 'info' | 'deny' } {
   if (e.status === 'RELEASED_PAID') return { label: 'Paid', tone: 'ok' }
-  if (e.status === 'REJECTED') return { label: 'Rejected', tone: 'deny' }
+  if (e.status === 'REJECTED') return { label: 'Rejected by approver', tone: 'deny' }
+  if (e.status === 'WITHDRAWN') return { label: 'Withdrawn by submitter', tone: 'deny' }
   if (e.status === 'APPROVED_READY') return { label: 'Ready to release', tone: 'info' }
   const n = e.approvals.length
   return {
@@ -368,6 +391,75 @@ export default function DualKeyWorkspace() {
         decide({ outcome: 'info', action: `Release ${exp.id}`, reason: 'This payment was already released.', httpStatus: 409 })
       } else {
         deny(`Release ${exp.id}`, 'no_release', res.status, data.error)
+      }
+    })
+
+  const rejectExpense = (exp: ExpenseItem) =>
+    run(`reject-${exp.id}`, async () => {
+      const res = await fetch(`/api/expenses/${exp.id}/reject`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          reason: `Declined by ${me.name} (${me.title}) during financial review.`,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        decide({
+          outcome: 'allowed',
+          action: `Rejected ${exp.id}`,
+          reason: `${me.name} declined this expense request. It is now closed and cannot be approved or paid.`,
+          enforcedBy: 'TideCloak role check + DualKey policy',
+          httpStatus: 200,
+        })
+      } else if (res.status === 403) {
+        const msg: string = data.error || ''
+        deny(
+          `Reject ${exp.id}`,
+          /separation/i.test(msg) ? 'self_approval' : 'no_reject',
+          403,
+          msg
+        )
+      } else {
+        decide({
+          outcome: 'info',
+          action: `Reject ${exp.id}`,
+          reason: data.error || 'This expense cannot be rejected.',
+          httpStatus: res.status,
+        })
+      }
+    })
+
+  const withdrawExpense = (exp: ExpenseItem) =>
+    run(`withdraw-${exp.id}`, async () => {
+      const res = await fetch(`/api/expenses/${exp.id}/withdraw`, {
+        method: 'POST',
+        headers: authHeaders(),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        decide({
+          outcome: 'allowed',
+          action: `Withdrew ${exp.id} (Thu hồi đơn)`,
+          reason: `${me.name} recalled this expense request before disbursement. It is now closed.`,
+          enforcedBy: 'DualKey policy (Submitter ownership)',
+          httpStatus: 200,
+        })
+      } else if (res.status === 403) {
+        deny(
+          `Withdraw ${exp.id}`,
+          'not_submitter_withdraw',
+          403,
+          data.error,
+          firstName(exp.submitterName)
+        )
+      } else {
+        decide({
+          outcome: 'info',
+          action: `Withdraw ${exp.id}`,
+          reason: data.error || 'This expense cannot be withdrawn.',
+          httpStatus: res.status,
+        })
       }
     })
 
@@ -671,6 +763,8 @@ export default function DualKeyWorkspace() {
                     onReveal={() => reveal(exp)}
                     onApprove={() => approve(exp)}
                     onRelease={() => release(exp)}
+                    onReject={() => rejectExpense(exp)}
+                    onWithdraw={() => withdrawExpense(exp)}
                   />
                 ))}
               </div>
@@ -872,10 +966,15 @@ function ExpenseCard(props: {
   onReveal: () => void
   onApprove: () => void
   onRelease: () => void
+  onReject: () => void
+  onWithdraw: () => void
 }) {
   const { exp, me, open, onToggle, decrypted, busy } = props
   const st = expenseStatus(exp)
   const paid = exp.status === 'RELEASED_PAID'
+  const rejected = exp.status === 'REJECTED'
+  const withdrawn = exp.status === 'WITHDRAWN'
+  const closed = paid || rejected || withdrawn
   const signedByMe = exp.approvals.some((a) => a.actorId === me.id)
   const isSubmitter = exp.submitterId === me.id
   const enough = exp.approvals.length >= exp.requiredApprovals
@@ -895,6 +994,14 @@ function ExpenseCard(props: {
     ? 'Needs expense-approver role'
     : !enough
     ? `Needs ${exp.requiredApprovals}/${exp.requiredApprovals} approvals`
+    : ''
+  const rejectHint = !me.canApprove
+    ? 'Needs expense-approver role'
+    : isSubmitter
+    ? 'Submitter should use Withdraw'
+    : ''
+  const withdrawHint = !isSubmitter
+    ? `Only submitter (${firstName(exp.submitterName)}) can withdraw`
     : ''
 
   const steps = [
@@ -950,6 +1057,22 @@ function ExpenseCard(props: {
                 </dd>
               </>
             )}
+            {rejected && (
+              <>
+                <dt>Rejected by</dt>
+                <dd style={{ color: 'var(--deny)' }}>
+                  {exp.rejectedBy} — {exp.rejectionReason}
+                </dd>
+              </>
+            )}
+            {withdrawn && (
+              <>
+                <dt>Withdrawn by</dt>
+                <dd style={{ color: 'var(--hold)' }}>
+                  {exp.withdrawnBy} (recalled by submitter before disbursement)
+                </dd>
+              </>
+            )}
           </dl>
 
           <div className={`vault ${decrypted ? 'open' : ''}`}>
@@ -991,17 +1114,33 @@ function ExpenseCard(props: {
             />
             <ActionButton
               label={`Approve${exp.approvals.length < exp.requiredApprovals ? ` (${exp.approvals.length + 1} of ${exp.requiredApprovals})` : ''}`}
-              hint={approveHint}
+              hint={closed ? '' : approveHint}
               tone="ok"
-              disabled={paid || busy === `approve-${exp.id}`}
+              disabled={closed || busy === `approve-${exp.id}`}
               onClick={props.onApprove}
             />
             <ActionButton
               label={paid ? 'Paid' : 'Release payment'}
-              hint={paid ? '' : releaseHint}
+              hint={closed ? '' : releaseHint}
               tone="primary"
-              disabled={paid || busy === `release-${exp.id}`}
+              disabled={closed || busy === `release-${exp.id}`}
               onClick={props.onRelease}
+            />
+          </div>
+          <div className="actions" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', marginTop: 8 }}>
+            <ActionButton
+              label={rejected ? 'Rejected' : 'Reject expense (Approver)'}
+              hint={closed ? '' : rejectHint}
+              tone="danger"
+              disabled={closed || busy === `reject-${exp.id}`}
+              onClick={props.onReject}
+            />
+            <ActionButton
+              label={withdrawn ? 'Withdrawn' : `Withdraw request (Thu hồi · ${firstName(exp.submitterName)})`}
+              hint={closed ? '' : withdrawHint}
+              tone="hold"
+              disabled={closed || busy === `withdraw-${exp.id}`}
+              onClick={props.onWithdraw}
             />
           </div>
           <div className="footnote">
@@ -1022,7 +1161,7 @@ function ActionButton({
 }: {
   label: string
   hint: string
-  tone: 'default' | 'ok' | 'primary'
+  tone: 'default' | 'ok' | 'primary' | 'danger' | 'hold'
   disabled?: boolean
   onClick: () => void
 }) {

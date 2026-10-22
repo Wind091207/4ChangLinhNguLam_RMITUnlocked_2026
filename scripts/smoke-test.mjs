@@ -160,10 +160,25 @@ async function main() {
     `✓ 7. Carol signed Approval 2 of 2 & released $18,500 AUD (Ref: ${relCarol.data.txRef})`
   )
 
-  // 8. Restore clean baseline for live demo
+  // 8. Verify Reject & Withdraw features
+  const rejAlice = await callApi('/api/expenses/EXP-2026-039/reject', 'POST', 'alice')
+  assert(rejAlice.status === 403, `Expected 403 when Alice rejects expense, got ${rejAlice.status}`)
+  const wdBob = await callApi('/api/expenses/EXP-2026-039/withdraw', 'POST', 'bob')
+  assert(wdBob.status === 403, `Expected 403 when non-submitter Bob withdraws Dave's expense, got ${wdBob.status}`)
+  const wdDave = await callApi('/api/expenses/EXP-2026-039/withdraw', 'POST', 'dave')
+  assert(wdDave.status === 200 && wdDave.data.expense.status === 'WITHDRAWN', `Expected 200 WITHDRAWN when Dave withdraws own expense, got ${wdDave.status}`)
+  console.log('✓ 8a. Dave (Submitter) successfully withdrew EXP-2026-039 (and non-submitters blocked with 403)')
+
+  // Reset and verify Approver Reject
+  await callApi('/api/governance', 'POST', 'alice', { action: 'reset_demo' })
+  const rejBob = await callApi('/api/expenses/EXP-2026-039/reject', 'POST', 'bob', { reason: 'Invoice documentation incomplete' })
+  assert(rejBob.status === 200 && rejBob.data.expense.status === 'REJECTED', `Expected 200 REJECTED when Bob rejects EXP-2026-039, got ${rejBob.status}`)
+  console.log('✓ 8b. Bob (Approver) successfully rejected EXP-2026-039 (and non-approvers blocked with 403)')
+
+  // 9. Restore clean baseline for live demo
   await callApi('/api/governance', 'POST', 'alice', { action: 'reset_demo' })
   console.log(
-    '✓ 8. Restored clean baseline state for user live demo.\nALL TESTS PASSED!'
+    '✓ 9. Restored clean baseline state for user live demo.\nALL TESTS PASSED!'
   )
 }
 

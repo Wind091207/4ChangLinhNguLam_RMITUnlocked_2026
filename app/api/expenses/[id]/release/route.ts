@@ -43,6 +43,15 @@ export async function POST(
     )
   }
 
+  if (expense.status === 'REJECTED' || expense.status === 'WITHDRAWN') {
+    return NextResponse.json(
+      {
+        error: `Conflict (409): Cannot release payment for ${expense.id} because its status is ${expense.status}.`,
+      },
+      { status: 409 }
+    )
+  }
+
   if (expense.approvals.length < expense.requiredApprovals) {
     appendAudit(db, {
       actorId: ctx.actor.id,
