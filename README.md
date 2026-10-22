@@ -87,6 +87,15 @@ npm run init
 ```
 *(Note: On Windows PowerShell where script execution policy is restricted, run `npm.cmd install` and `node scripts/provision-tidecloak.mjs`.)*
 
+> **Custom TideCloak Admin Credentials (Optional):**
+> By default, the scripts connect using `KC_USER=admin` and `KC_PASSWORD=password` (matching Step 2). If your TideCloak container uses a different bootstrap admin username or password, either create a `.env.local` file in the project root:
+> ```env
+> KC_USER=your_admin_username
+> KC_PASSWORD=your_admin_password
+> TIDECLOAK_LOCAL_URL=http://localhost:8080
+> ```
+> or pass them inline (`KC_USER=your_user KC_PASSWORD=your_pass npm run init` on Bash, or `$env:KC_USER="your_user"; $env:KC_PASSWORD="your_pass"; node scripts/provision-tidecloak.mjs` on PowerShell).
+
 This script automatically provisions the `dualkey` realm on `http://localhost:8080`, enables **IGA Quorum Governance (2-of-3 Admins)**, creates the 4 demo personas (`dave`, `alice`, `bob`, `carol`), grants `expense-approver` only to `bob` and `carol` (leaving IT Admin `alice` without approver authority), and generates `tidecloak.json`.
 
 ### 4. Start the Web Application

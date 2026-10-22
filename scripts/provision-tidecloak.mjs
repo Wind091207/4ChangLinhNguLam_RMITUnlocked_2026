@@ -2,6 +2,19 @@ import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
 
+// Load .env.local or .env if present so custom KC_USER / KC_PASSWORD works automatically
+for (const envFile of ['.env.local', '.env']) {
+  const p = path.join(process.cwd(), envFile)
+  if (fs.existsSync(p)) {
+    for (const line of fs.readFileSync(p, 'utf8').split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/)
+      if (m && !process.env[m[1]]) {
+        process.env[m[1]] = m[2].replace(/^['"]|['"]$/g, '')
+      }
+    }
+  }
+}
+
 const TIDECLOAK_URL = process.env.TIDECLOAK_LOCAL_URL || 'http://localhost:8080'
 const REALM_NAME = process.env.NEW_REALM_NAME || 'dualkey'
 const CLIENT_NAME = process.env.CLIENT_NAME || 'dualkey-client'
