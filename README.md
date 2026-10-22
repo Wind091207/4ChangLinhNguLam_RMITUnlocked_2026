@@ -66,29 +66,39 @@ flowchart LR
 
 ### Prerequisites
 - **Docker Desktop** running locally
-- **Node.js 20.9+**
+- **Node.js 20.9+** and **Git**
 
-### 1. Start TideCloak Dev Server
+### 1. Clone the Repository
 ```bash
-docker run --name mytidecloak -d -p 8080:8080 \
-  -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
-  -e KC_BOOTSTRAP_ADMIN_PASSWORD=password \
-  tideorg/tidecloak-dev:latest
+git clone https://github.com/Wind091207/4ChangLinhNguLam_RMITUnlocked_2026.git
+cd 4ChangLinhNguLam_RMITUnlocked_2026
 ```
 
-### 2. Provision the `dualkey` Realm & Actors
+### 2. Start TideCloak Dev Server (Docker on port `8080`)
+```bash
+docker run --name mytidecloak -d -p 8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=password tideorg/tidecloak-dev:latest
+```
+*(If container `mytidecloak` already exists, simply run `docker start mytidecloak`.)*
+
+### 3. Install Dependencies & Provision the `dualkey` Realm
 ```bash
 npm install
-node scripts/provision-tidecloak.mjs
+npm run init
 ```
-This script provisions the `dualkey` realm, enables IGA Quorum Governance, creates the demo actors (`dave`, `alice`, `bob`, `carol`), grants `expense-approver` only to `bob` and `carol` (leaving `alice` without approver authority), and writes `tidecloak.json`.
+*(Note: On Windows PowerShell where script execution policy is restricted, run `npm.cmd install` and `node scripts/provision-tidecloak.mjs`.)*
 
-### 3. Start the Prototype
+This script automatically provisions the `dualkey` realm on `http://localhost:8080`, enables **IGA Quorum Governance (2-of-3 Admins)**, creates the 4 demo personas (`dave`, `alice`, `bob`, `carol`), grants `expense-approver` only to `bob` and `carol` (leaving IT Admin `alice` without approver authority), and generates `tidecloak.json`.
+
+### 4. Start the Web Application
 ```bash
 npm run dev
 ```
-Open **http://localhost:3000** to explore the interactive 4-actor demo and run the automated smoke test:
+Open **http://localhost:3000** in your browser.
+
+### 5. (Optional) Run Automated End-to-End Smoke Verification
+In a second terminal while the server is running on port `3000`:
 ```bash
-node scripts/smoke-test.mjs
+npm run smoke
+# or: node scripts/smoke-test.mjs
 ```
 
