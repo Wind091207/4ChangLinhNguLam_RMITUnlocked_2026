@@ -1,0 +1,208 @@
+{
+  "expenses": [
+    {
+      "id": "EXP-2026-045",
+      "title": "Emergency Solar Microgrid & Cold-Chain Units — Phase 2",
+      "category": "Field Medical Infrastructure",
+      "amountAud": 22000,
+      "requiresDualControl": true,
+      "requiredApprovals": 2,
+      "submitterId": "dave",
+      "submitterName": "Dave Miller",
+      "submitterTitle": "Field Operations Lead",
+      "createdAt": "2026-10-22T08:53:45.890Z",
+      "invoiceRef": "INV-MKG-2026-105",
+      "justification": "Cold-chain vaccine storage & 20kW hybrid solar inverter for rural health clinic.",
+      "payeeName": "Mekong Solar Infrastructure Co., Ltd.",
+      "payeeBankCiphertext": "TIDE_E2EE_ORK_SHARES[tag=payee,alg=XChaCha20-Poly1305]::b3ca5a1239fe9ae840d11a060760a2d3d7911138fe3aed1eb92fdd4f1ab48d7df992a12a288a27fdf11f719ba8edb320...",
+      "payeeBankSealedEnvelope": "d5XuMCT/u+dscEfa5+8Bf0D/OTFvIpfQ+ydg+rPKWhI5/proQNEaBgdgotPXkRE4/jrtHrkv3U8atI19+ZKhKiiKJ/3xH3GbqO2zIAGSeXYjiZib+wariaxb3Mw+Hge3HWU4CJdGShxi/h7+/nod7f2I1t8bmpjUSeiamp1LRBOrBs9DsX4D7ewzWfmGzPXqICj9J5zEROp6Jw/cni2cAa/he38HqWqHvjIwR0VIQO+1wxA2+7vBvCdbHef5meS1PlsVdTCVYPlDzysqVsFnctIUOAE5GziljBonmtdHZuWFXctUMRWeDroW5swTfp3o6KiYqeD6TuIdRmTdDYbhz6zTI+8E+o5R+TjDTYupvnMjIrFIFDdXin/KsPehcwKXOTf97fvR",
+      "encryptionTag": "payee",
+      "encryptedViaTideOrk": true,
+      "approvals": [
+        {
+          "actorId": "bob",
+          "actorName": "Bob Chen",
+          "actorTitle": "Finance Director · Approver A",
+          "vuid": "tide-vuid-bob",
+          "timestamp": "2026-10-22T08:54:23.909Z",
+          "verificationMethod": "TideCloak Role-Bound Session [expense-approver]"
+        }
+      ],
+      "status": "PENDING_APPROVAL"
+    },
+    {
+      "id": "EXP-2026-041",
+      "title": "Emergency Solar Microgrid & Cold-Chain Units — Mekong Clinic",
+      "category": "Field Medical Infrastructure",
+      "amountAud": 18500,
+      "requiresDualControl": true,
+      "requiredApprovals": 2,
+      "submitterId": "dave",
+      "submitterName": "Dave Miller",
+      "submitterTitle": "Field Operations Lead",
+      "createdAt": "2026-10-22T08:09:43.724Z",
+      "invoiceRef": "INV-MKG-2026-098",
+      "justification": "Vaccine cold-chain battery bank and 15kW solar array for rural Mekong delta health post under WHO grant #G-882.",
+      "payeeName": "Mekong Solar Infrastructure Co., Ltd.",
+      "payeeBankCiphertext": "TIDE_E2EE_ORK_SHARES[tag=payee,alg=XChaCha20-Poly1305]::aabe9b1cd64a5e741fd667b7a369933c8df67b1ad0d685cb3a3c2886d8c6beff61952fd94c6f79f309cf2f955ae89b4f...",
+      "payeeBankSealedEnvelope": "xhGC/2WEDaAI0KEZq92hsTFNfFbciDrACMFfyaq+mxzWSl50H9Znt6NpkzyN9nsa0NaFyzo8KIbYxr7/YZUv2UxvefMJzy+VWuibT+lbNGKdtU23Xn3n1FJE4AJa1AhepOmg4jxfs0D4jKY0Zc4ku2xKmVc+vSXb94O0IUDvrEPTlFjltgv6LqL/Av0q3do9Lm77PmJ1NHaQYDn4Y4YhiJwH0kz1XBPzhF5k4fXd9iSE9o0cTGnvnTkuGMsG9W3mXtCQzAvCtTPLB0SOOhWtgF9LxvomCAUB+9Tukze4Xnh6OsyLudK9zsttBOMo6fYq0BuTMdtvvj7PgslCla/z3bgcAJdnMipaRQS6RVx8aBt+oosRW/dc7ujoWDsRTqeh8vjdp7Wm/sw=",
+      "encryptionTag": "payee",
+      "encryptedViaTideOrk": true,
+      "approvals": [],
+      "status": "PENDING_APPROVAL"
+    },
+    {
+      "id": "EXP-2026-039",
+      "title": "Annual External Grant & Donor Compliance Audit (FY26)",
+      "category": "Governance & Assurance",
+      "amountAud": 12400,
+      "requiresDualControl": true,
+      "requiredApprovals": 2,
+      "submitterId": "dave",
+      "submitterName": "Dave Miller",
+      "submitterTitle": "Field Operations Lead",
+      "createdAt": "2026-10-22T06:56:43.724Z",
+      "invoiceRef": "INV-AUD-2026-044",
+      "justification": "Mandatory independent financial verification for DFAT & RMIT Social Impact grant tranche release.",
+      "payeeName": "Deloitte Humanitarian Assurance Partners",
+      "payeeBankCiphertext": "TIDE_E2EE_ORK_SHARES[tag=payee,alg=XChaCha20-Poly1305]::f506dcf9f641d788960b11bf23730f3ff0c4fe0b2fdf80e9703495ff9e9b88365a7f9625f4da67512d53e91f004df999...",
+      "payeeBankSealedEnvelope": "ohk43QnJBVRq0uJB4bkRkzM18PtCjD2uUQZZgPUG3Pn2QdeIlgsRvyNzDz/wxP4LL9+A6XA0lf+em4g2Wn+WJfTaZ1EtU+kfAE35meo64gNT3XkTfSBZ9/a0fM0yqiWN9e0iX+9KL/hnp1dw1lpBD4pVNg2JBDzu6x5isLI+iKmYX+HvXRPjIO8N0F5PBTjz6LJtDLVVnB4Fcr8dngfnveumK19AwHEKoTHi9bTzcPMXkdy4f7qbAi7VYEnyUPsTWgz7XEqsra1W2OcVkypBFbRSPMVDWnPvv+XnvadFf7lVpDoDX83IFTfzz7ZTXdQvL6QfbyIf51/oLUKFgRPT6ozGGKDAXgKK6vmtGxGi3REKNfpWYZg=",
+      "encryptionTag": "payee",
+      "encryptedViaTideOrk": true,
+      "approvals": [
+        {
+          "actorId": "bob",
+          "actorName": "Bob Chen",
+          "actorTitle": "Finance Director · Approver A",
+          "vuid": "tide-vuid-bob-9f21a4",
+          "timestamp": "2026-10-22T07:41:43.724Z",
+          "verificationMethod": "TideCloak JWT + DPoP + Role [expense-approver]"
+        }
+      ],
+      "status": "PENDING_APPROVAL"
+    },
+    {
+      "id": "EXP-2026-035",
+      "title": "Field Water Purification Cartridges (Batch #12 · 400 Units)",
+      "category": "Emergency Relief Supplies",
+      "amountAud": 14200,
+      "requiresDualControl": true,
+      "requiredApprovals": 2,
+      "submitterId": "dave",
+      "submitterName": "Dave Miller",
+      "submitterTitle": "Field Operations Lead",
+      "createdAt": "2026-10-22T04:01:43.724Z",
+      "invoiceRef": "INV-AQP-2026-012",
+      "justification": "Clean water filtration membranes deployed to 8 flood-affected commune stations.",
+      "payeeName": "AquaPure Medical Logistics Pty Ltd",
+      "payeeBankCiphertext": "TIDE_E2EE_ORK_SHARES[tag=payee,alg=XChaCha20-Poly1305]::234ea01e542c8b8a2368d960e307c895e07b0b409db2163487dc4b080457c985350a1ea179dc3e5fdb343bda8cf05265...",
+      "payeeBankSealedEnvelope": "u6w8mjuQFP/1l28wz8jIWsiAFCZMUp7BM+gTeyNOoB5ULIuKI2jZYOMHyJXgewtAnbIWNIfcSwgEV8mFNQoeoXncPl/bNDvajPBSZYN4iF+0mk0xX2kfyxb7MI6njcShxkiM2mXIpJt9jzPbNoaYzGQD2tx/er5ZY2OsUB4CYo5etuJm0sCpXTRZuw6qHq/Ru/8+GXcIx5eBV8nP9o2s478gl4hK2AO6PPXizaEeq87+JeUFGBMZNA13i3VWtRIq+PRLEPph+liDkxAkZvLg7AqFcnFOJDsS9YODaexJpz/Iw35s+V+iQMi8U7fyK36sR4QejzB3U8E/3vQPcbTKPZfwJ4Y6jcXyyDBfGus=",
+      "encryptionTag": "payee",
+      "encryptedViaTideOrk": true,
+      "approvals": [
+        {
+          "actorId": "bob",
+          "actorName": "Bob Chen",
+          "actorTitle": "Finance Director · Approver A",
+          "vuid": "tide-vuid-bob-9f21a4",
+          "timestamp": "2026-10-22T04:51:43.724Z",
+          "verificationMethod": "TideCloak JWT + DPoP + Role [expense-approver]"
+        },
+        {
+          "actorId": "carol",
+          "actorName": "Carol Nguyen",
+          "actorTitle": "CFO & Board Trustee · Approver B",
+          "vuid": "tide-vuid-carol-4c88e1",
+          "timestamp": "2026-10-22T05:36:43.724Z",
+          "verificationMethod": "TideCloak JWT + DPoP + Role [expense-approver]"
+        }
+      ],
+      "status": "RELEASED_PAID",
+      "releasedAt": "2026-10-22T05:41:43.724Z",
+      "releasedBy": "Carol Nguyen (CFO)",
+      "paymentTxRef": "TIDE-ESCROW-TX-994821-AUD"
+    }
+  ],
+  "igaChangeRequests": [],
+  "auditEvents": [
+    {
+      "id": "AUD-1006",
+      "timestamp": "2026-10-22T08:54:49.519Z",
+      "actorId": "carol",
+      "actorName": "Carol Nguyen",
+      "actorRole": "expense-approver + _tide_payee.selfdecrypt",
+      "action": "DECRYPT_PAYEE_AUTHORIZED",
+      "targetId": "EXP-2026-045",
+      "allowed": true,
+      "layer": "TideCloak E2EE Fabric",
+      "details": "Carol Nguyen unsealed payee banking coordinates (Commonwealth Bank of Australia (NGO Escrow) · Acc 1094-8821-73) for EXP-2026-045 via Tide E2EE role-bound key release.",
+      "httpStatus": 200
+    },
+    {
+      "id": "AUD-1005",
+      "timestamp": "2026-10-22T08:54:23.909Z",
+      "actorId": "bob",
+      "actorName": "Bob Chen",
+      "actorRole": "expense-approver",
+      "action": "APPROVE_EXPENSE (1/2)",
+      "targetId": "EXP-2026-045",
+      "allowed": true,
+      "layer": "DualKey Policy Engine",
+      "details": "Bob Chen recorded cryptographic approval 1 of 2 for EXP-2026-045 ($22,000 AUD). Awaiting 2nd distinct approver.",
+      "httpStatus": 200
+    },
+    {
+      "id": "AUD-1004",
+      "timestamp": "2026-10-22T08:53:45.890Z",
+      "actorId": "dave",
+      "actorName": "Dave Miller",
+      "actorRole": "expense-submitter",
+      "action": "SUBMIT_EXPENSE_E2EE",
+      "targetId": "EXP-2026-045",
+      "allowed": true,
+      "layer": "TideCloak E2EE Fabric",
+      "details": "Created EXP-2026-045 ($22,000 AUD). Payee bank account sealed under tag [payee] (Tide E2EE Envelope). Requires 2 independent approver(s).",
+      "httpStatus": 201
+    },
+    {
+      "id": "AUD-1003",
+      "timestamp": "2026-10-22T08:09:43.724Z",
+      "actorId": "dave",
+      "actorName": "Dave Miller",
+      "actorRole": "expense-submitter",
+      "action": "SUBMIT_EXPENSE_E2EE",
+      "targetId": "EXP-2026-041",
+      "allowed": true,
+      "layer": "TideCloak E2EE Fabric",
+      "details": "Submitted $18,500 AUD claim. Payee bank coordinates sealed client-side under tag [payee]. Database stores ciphertext only.",
+      "httpStatus": 201
+    },
+    {
+      "id": "AUD-1002",
+      "timestamp": "2026-10-22T07:41:43.724Z",
+      "actorId": "bob",
+      "actorName": "Bob Chen",
+      "actorRole": "expense-approver",
+      "action": "APPROVE_EXPENSE (1/2)",
+      "targetId": "EXP-2026-039",
+      "allowed": true,
+      "layer": "DualKey Policy Engine",
+      "details": "Verified TideCloak role [expense-approver]. Recorded 1st of 2 required approvals for $12,400 AUD disbursement.",
+      "httpStatus": 200
+    },
+    {
+      "id": "AUD-1001",
+      "timestamp": "2026-10-22T03:31:43.724Z",
+      "actorId": "system",
+      "actorName": "TideCloak IGA Fabric",
+      "actorRole": "tide-realm-admin (Quorum 2/3)",
+      "action": "REALM_MULTIADMIN_QUORUM_LOCKED",
+      "targetId": "realm:dualkey",
+      "allowed": true,
+      "layer": "TideCloak IGA Quorum",
+      "details": "Realm [dualkey] armed with Quorum-Enforced Governance: floor(3 admins × 0.7) = 2 admin signatures required for any role mutation.",
+      "httpStatus": 200
+    }
+  ],
+  "dynamicRoleGrants": {}
+}

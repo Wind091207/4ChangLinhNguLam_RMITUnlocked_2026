@@ -1,0 +1,27 @@
+{
+  "name": "dualkey-expense-desk",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "init": "node scripts/provision-tidecloak.mjs",
+    "smoke": "node scripts/smoke-test.mjs"
+  },
+  "dependencies": {
+    "next": "16.x",
+    "react": "19.x",
+    "react-dom": "19.x",
+    "@tidecloak/nextjs": "^0.13.11"
+  },
+  "overrides": {
+    "postcss": "^8.5.25",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.0.13",
+    "@types/react": "19.1.8",
+    "typescript": "5.8.3"
+  }
+}

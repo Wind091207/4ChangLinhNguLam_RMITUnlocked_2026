@@ -1,0 +1,23 @@
+{
+  "realm": "dualkey",
+  "auth-server-url": "http://localhost:8080",
+  "ssl-required": "external",
+  "resource": "dualkey-client",
+  "public-client": true,
+  "confidential-port": 0,
+  "vendorId": "dualkey-rmit-unlocked-2026",
+  "homeOrkUrl": "https://ork1.tideprotocol.com",
+  "client-origin-auth-http://localhost:3000": "dualkey-signed-origin-auth-v1",
+  "jwk": {
+    "keys": [
+      {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "92pjalsUHqoozXklun9GhUPPMVFxT-vIjfQkdCfBNoc",
+        "use": "sig",
+        "alg": "EdDSA",
+        "kid": "dualkey-tide-vrk-2026"
+      }
+    ]
+  }
+}
