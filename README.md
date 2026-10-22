@@ -78,30 +78,42 @@ cd 4ChangLinhNguLam_RMITUnlocked_2026
 ```bash
 docker run --name mytidecloak -d -p 8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=password tideorg/tidecloak-dev:latest
 ```
-*(If container `mytidecloak` already exists, simply run `docker start mytidecloak`.)*
+- If the `mytidecloak` container already exists on your machine, simply start it:
+  ```bash
+  docker start mytidecloak
+  ```
+- **What if your TideCloak container uses a different admin username or password (not `admin` / `password`)?**
+  Before running Step 3 & Step 4, create a `.env.local` file in the project root with your custom credentials:
+  ```env
+  KC_USER=your_admin_username
+  KC_PASSWORD=your_admin_password
+  TIDECLOAK_LOCAL_URL=http://localhost:8080
+  ```
+  Both the provisioning script (`scripts/provision-tidecloak.mjs`) and the Next.js server automatically read `.env.local`.
 
 ### 3. Install Dependencies & Provision the `dualkey` Realm
-```bash
-npm install
-npm run init
-```
-*(Note: On Windows PowerShell where script execution policy is restricted, run `npm.cmd install` and `node scripts/provision-tidecloak.mjs`.)*
+- **macOS / Linux / Git Bash / CMD:**
+  ```bash
+  npm install
+  npm run init
+  ```
+- **Windows PowerShell:**
+  ```powershell
+  npm.cmd install
+  node scripts/provision-tidecloak.mjs
+  ```
 
-> **Custom TideCloak Admin Credentials (Optional):**
-> By default, the scripts connect using `KC_USER=admin` and `KC_PASSWORD=password` (matching Step 2). If your TideCloak container uses a different bootstrap admin username or password, either create a `.env.local` file in the project root:
-> ```env
-> KC_USER=your_admin_username
-> KC_PASSWORD=your_admin_password
-> TIDECLOAK_LOCAL_URL=http://localhost:8080
-> ```
-> or pass them inline (`KC_USER=your_user KC_PASSWORD=your_pass npm run init` on Bash, or `$env:KC_USER="your_user"; $env:KC_PASSWORD="your_pass"; node scripts/provision-tidecloak.mjs` on PowerShell).
-
-This script automatically provisions the `dualkey` realm on `http://localhost:8080`, enables **IGA Quorum Governance (2-of-3 Admins)**, creates the 4 demo personas (`dave`, `alice`, `bob`, `carol`), grants `expense-approver` only to `bob` and `carol` (leaving IT Admin `alice` without approver authority), and generates `tidecloak.json`.
+This script automatically provisions the `dualkey` realm on `http://localhost:8080`, enables **IGA Quorum Governance (2-of-3 Admins)**, creates the 4 demo personas (`dave`, `alice`, `bob`, `carol`), grants `expense-approver` only to `bob` and `carol` (leaving IT Admin `alice` without approver authority), and writes `tidecloak.json`.
 
 ### 4. Start the Web Application
-```bash
-npm run dev
-```
+- **macOS / Linux / Git Bash / CMD:**
+  ```bash
+  npm run dev
+  ```
+- **Windows PowerShell:**
+  ```powershell
+  npm.cmd run dev
+  ```
 Open **http://localhost:3000** in your browser.
 
 ### 5. (Optional) Run Automated End-to-End Smoke Verification
